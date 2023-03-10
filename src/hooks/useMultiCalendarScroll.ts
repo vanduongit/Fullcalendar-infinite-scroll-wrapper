@@ -1,8 +1,7 @@
 import React, {useCallback, useEffect, useMemo, useRef, useState} from "react";
-import throttle from "lodash/throttle";
 import {addDays, addMonths, subMonths, subDays} from "date-fns";
 
-import {checkIsMacDevice} from "../utils";
+import {checkIsMacDevice, throttle} from "../utils";
 import { CalendarScrollOptions } from "../types";
 
 const defaultOptions = {
@@ -197,12 +196,6 @@ export function useMultiCalendarScroll(
             }
         }, 500); // wait multicalendar first load done.
     }, []);
-
-    useEffect(() => {
-        return () => {
-            throttleCalendarMove.cancel();
-        };
-    }, [throttleCalendarMove]);
 
     useEffect(() => {
         document.body.style.overscrollBehaviorX = "none";
