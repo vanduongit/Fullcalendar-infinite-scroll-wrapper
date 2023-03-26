@@ -9,18 +9,17 @@ export interface CalendarRef {
 
 export interface CalendarScrollOptions {
     stepDates?: number;
-    numberOfStepLoadData?: number;
     numberOfDatesFromCurrentDate?: number;
     slotMinWidth?: number;
 }
 
+export const CLASSNAME_WRAPPER = "full-calendar-infinite-scroll-wrapper";
 
 const defaultOptions = {
     stepDates: 20,
-    numberOfStepLoadData: 2,
     numberOfDatesFromCurrentDate: 15,
-    slotMinWidth: 80,
-}
+    slotMinWidth: 80
+};
 
 function getScroller(calendarDom: HTMLDivElement) {
     return calendarDom.querySelector("tfoot th:nth-child(3) .fc-scroller");
@@ -29,17 +28,13 @@ function getScroller(calendarDom: HTMLDivElement) {
 export function useMultiCalendarScroll(
     calendarRef: React.RefObject<any | undefined>,
     scrollOptions: CalendarScrollOptions,
-    fetchMore: (currentStartDate: Date, currentEndDate: Date, distanceDays: number) => void,
-    firstLoad: (
-        startDate: Date,
-        endDate: Date,
-    ) => void,
+    onChangeCalendar?: (currentStartDate: Date, currentEndDate: Date, distanceDays: number) => void,
+    firstLoad?: (startDate: Date, endDate: Date) => void
 ) {
     const {
         stepDates = defaultOptions.stepDates,
         numberOfDatesFromCurrentDate = defaultOptions.numberOfDatesFromCurrentDate,
-        numberOfStepLoadData = defaultOptions.numberOfStepLoadData,
-        slotMinWidth = defaultOptions.slotMinWidth,
+        slotMinWidth = defaultOptions.slotMinWidth
     } = scrollOptions;
 
     const LATENCY_SCROLL = slotMinWidth * 3; // pixel unit, latency to scroll to start or end
@@ -55,21 +50,17 @@ export function useMultiCalendarScroll(
         [calendarRef]
     );
 
-    const handleFetchMore = useCallback(
-        function handleFetchMore(
+    const handleChangeCalendar = useCallback((
             currentStartDate: Date,
             currentEndDate: Date,
             distanceDays: number
-        ) {
-            const activeStartDate = addDays(
-                currentStartDate,
-                numberOfStepLoadData * distanceDays
-            );
-            const activeEndDate = addDays(currentEndDate, numberOfStepLoadData * distanceDays);
+        ) => {
+            const activeStartDate = addDays(currentStartDate, distanceDays);
+            const activeEndDate = addDays(currentEndDate, distanceDays);
 
-            fetchMore(activeStartDate, activeEndDate, distanceDays);
+            onChangeCalendar?.(activeStartDate, activeEndDate, distanceDays);
         },
-        [fetchMore]
+        [onChangeCalendar]
     );
 
     const calendarMove = useCallback(
@@ -105,10 +96,10 @@ export function useMultiCalendarScroll(
                         }
                     }, 100);
                 });
-                handleFetchMore(activeStart, activeEnd, steps);
+                handleChangeCalendar(activeStart, activeEnd, steps);
             }
         },
-        [calendarDom, getCalendarApi, handleFetchMore]
+        [calendarDom, getCalendarApi, handleChangeCalendar, slotMinWidth]
     );
 
     const throttleCalendarMove = useMemo(() => throttle(calendarMove, 1000), [calendarMove]);
@@ -127,7 +118,7 @@ export function useMultiCalendarScroll(
                 throttleCalendarMove(stepDates);
             }
         },
-        [throttleCalendarMove]
+        [LATENCY_SCROLL, stepDates, throttleCalendarMove]
     );
 
     useEffect(() => {
@@ -193,16 +184,16 @@ export function useMultiCalendarScroll(
                 scroller.removeEventListener("mouseup", mouseupEvent);
             }
         };
-    }, [calendarDom]);
+    }, [calendarDom, slotMinWidth]);
 
     useEffect(() => {
         setTimeout(() => {
             const calendarApi = getCalendarApi();
             if (calendarApi?.view) {
                 const {activeStart, activeEnd} = calendarApi.view;
-                firstLoad(
-                    subDays(activeStart, stepDates * numberOfStepLoadData + 1),
-                    addDays(activeEnd, stepDates * numberOfStepLoadData + 1)
+                firstLoad?.(
+                    subDays(activeStart, stepDates + 1),
+                    addDays(activeEnd, stepDates + 1)
                 );
             }
         }, 500); // wait multicalendar first load done.
@@ -216,7 +207,7 @@ export function useMultiCalendarScroll(
     }, []);
 
     useEffect(() => {
-        const calendar = document.querySelector(".multiCalendar");
+        const calendar = document.querySelector(`.${CLASSNAME_WRAPPER}`);
         if (calendar) {
             setCalendarDom(calendar as HTMLDivElement);
         }
@@ -232,14 +223,11 @@ export function useMultiCalendarScroll(
                         days: 15
                     });
                     const {activeStart, activeEnd} = calendarApi.view;
-                    firstLoad(
-                        subDays(activeStart, stepDates * numberOfStepLoadData + 1),
-                        addDays(activeEnd, stepDates * numberOfStepLoadData + 1)
-                    );
+                    handleChangeCalendar(activeStart, activeEnd, 0);
                 }, 0);
             });
         },
-        [firstLoad, getCalendarApi]
+        [getCalendarApi, handleChangeCalendar]
     );
 
     const handleMove = useCallback(
@@ -259,10 +247,10 @@ export function useMultiCalendarScroll(
                             const {activeStart: newActiveStart, activeEnd: newActiveEnd} =
                                 calendarApi.view;
 
-                            fetchMore(
+                            handleChangeCalendar(
                                 newActiveStart,
                                 newActiveEnd,
-                                stepDates * numberOfStepLoadData
+                                0
                             );
                         }, 0);
                     });
@@ -274,11 +262,7 @@ export function useMultiCalendarScroll(
                         });
                         const {activeStart: newActiveStart, activeEnd: newActiveEnd} =
                             calendarApi.view;
-                        fetchMore(
-                            newActiveStart,
-                            newActiveEnd,
-                            -stepDates * numberOfStepLoadData
-                        );
+                            handleChangeCalendar(newActiveStart, newActiveEnd, 0);
                     }, 0);
                 } else if (direction === "today") {
                     calendarApi.batchRendering(() => {
@@ -289,11 +273,14 @@ export function useMultiCalendarScroll(
                                 days: numberOfDatesFromCurrentDate
                             });
                         }, 0);
+                        const {activeStart: newActiveStart, activeEnd: newActiveEnd} =
+                            calendarApi.view;
+                            handleChangeCalendar(newActiveStart, newActiveEnd, 0);
                     });
                 }
             }
         },
-        [fetchMore, getCalendarApi]
+        [getCalendarApi, handleChangeCalendar, numberOfDatesFromCurrentDate]
     );
 
     return [days, handleMoveToDate, handleMove] as const;
