@@ -1,10 +1,11 @@
 {
   "name": "fullcalendar-timeline-infinite-scroll-wrapper",
-  "version": "1.0.9",
+  "version": "1.0.13",
   "description": "React library support infinite scroll to fullcalendar resource timeline",
   "keywords": [
     "react",
-    "@fullcalendar/react"
+    "@fullcalendar/react",
+    "@fullcalendar/resource-timeline"
   ],
   "scripts": {
     "rollup": "rollup -c"

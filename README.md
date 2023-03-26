@@ -22,7 +22,10 @@ Or via [yarn](https://github.com/yarnpkg/yarn):
 yarn add fullcalendar-timeline-infinite-scroll-wrapper
 ```
 
-You will need to use with [Fullcalendar react](https://www.npmjs.com/package/@fullcalendar/react)
+You will need to use with [Fullcalendar react](https://www.npmjs.com/package/@fullcalendar/react) and plugins [@fullcalendar/resource-timeline](https://www.npmjs.com/package/@fullcalendar/resource-timeline)
+
+## Demo
+[View demo here](https://masterhuyenthoai.github.io/pages/)
 
 ## Usage
 
