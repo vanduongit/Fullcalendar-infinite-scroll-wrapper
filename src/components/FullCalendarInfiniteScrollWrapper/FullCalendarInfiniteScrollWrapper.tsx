@@ -1,38 +1,43 @@
 import React, { useRef } from 'react'
-import { useMultiCalendarScroll, CalendarScrollOptions } from '../../hooks/useMultiCalendarScroll';
+import { useMultiCalendarScroll, CalendarScrollOptions, CLASSNAME_WRAPPER } from '../../hooks/useMultiCalendarScroll';
 
-type ChildrenParams = {
+export type ChildrenParams = {
     ref: any;
     numberDisplayDaysOfCalendar: number;
     moveToDate: (date: Date) => void;
     onMoveDirection: (direction: "next" | "prev" | "today") => void;
-}
+};
 
-type Props = {
-    scrollOptions: CalendarScrollOptions,
+export type Props = {
+    scrollOptions: CalendarScrollOptions;
     children: (params: ChildrenParams) => React.ReactElement;
-    fetchMore: (currentStartDate: Date, currentEndDate: Date, distanceDays: number) => void,
-    firstLoad: (
-        startDate: Date,
-        endDate: Date,
-    ) => void,
-}
+    onChangeCalendar?: (currentStartDate: Date, currentEndDate: Date, distanceDays: number) => void;
+    firstLoad?: (startDate: Date, endDate: Date) => void;
+};
 
-const FullCalendarInfiniteScrollWrapper = ({children, fetchMore, firstLoad, scrollOptions}: Props) => {
+const FullCalendarInfiniteScrollWrapper = ({
+    children,
+    onChangeCalendar,
+    firstLoad,
+    scrollOptions
+}: Props) => {
     const calendarRef = useRef<any>();
     const [days, moveToDate, handleMove] = useMultiCalendarScroll(
         calendarRef,
         scrollOptions,
-        fetchMore,
-        firstLoad,
+        onChangeCalendar,
+        firstLoad
     );
 
-    return children({
-        ref: calendarRef,
-        numberDisplayDaysOfCalendar: days,
-        moveToDate,
-        onMoveDirection: handleMove
-    });
-}
-
+    return (
+        <div className={CLASSNAME_WRAPPER}>
+            {children({
+                ref: calendarRef,
+                numberDisplayDaysOfCalendar: days,
+                moveToDate,
+                onMoveDirection: handleMove
+            })}
+        </div>
+    )
+};
 export default FullCalendarInfiniteScrollWrapper

@@ -6,6 +6,9 @@ import peerDepsExternal from "rollup-plugin-peer-deps-external";
 import filesize from 'rollup-plugin-filesize';
 import packageJson from './package.json';
 
+const globals = {
+  react: "React",
+};
 
 export default [
   {
@@ -27,7 +30,7 @@ export default [
       peerDepsExternal(),
       commonjs(),
       filesize(),
-      typescript({ tsconfig: "./tsconfig.json" }),
+      typescript({ tsconfig: "./tsconfig.json", exclude: ["examples/**"] }),
     ],
   },
   {
