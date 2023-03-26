@@ -3,7 +3,7 @@ import FullCalendar from '@fullcalendar/react'
 import resourceTimelinePlugin from "@fullcalendar/resource-timeline";
 import interactionPlugin from "@fullcalendar/interaction";
 
-import { FullCalendarInfiniteScrollWrapper } from "../components/FullCalendarInfiniteScrollWrapper/FullCalendarInfiniteScrollWrapper";
+import { FullCalendarInfiniteScrollWrapper } from "fullcalendar-timeline-infinite-scroll-wrapper";
 
 type Props = {}
 
@@ -21,8 +21,6 @@ const MonthView = (props: Props) => {
         console.log("handleFirstLoad startDate:", startDate)
     }, []);
 
-    console.log("render first");
-
     return (
         <FullCalendarInfiniteScrollWrapper
             scrollOptions={scrollOptions}
@@ -31,39 +29,39 @@ const MonthView = (props: Props) => {
         >
             {({ref, numberDisplayDaysOfCalendar, moveToDate, onMoveDirection}) => (
                 <>
-                <button onClick={() => onMoveDirection("next")}>next</button>&nbsp;
-                <button onClick={() => onMoveDirection("today")}>today</button>&nbsp;
-                <button onClick={() => onMoveDirection("prev")}>prev</button>&nbsp;
+                    <button onClick={() => onMoveDirection("next")}>next</button>&nbsp;
+                    <button onClick={() => onMoveDirection("today")}>today</button>&nbsp;
+                    <button onClick={() => onMoveDirection("prev")}>prev</button>&nbsp;
 
-                <FullCalendar
-                    ref={ref}
-                    schedulerLicenseKey="GPL-My-Project-Is-Open-Source"
-                    initialView="resourceTimelineMonthCustom"
-                    plugins={[resourceTimelinePlugin, interactionPlugin]}
-                    views={{
-                        resourceTimelineMonthCustom: {
-                            type: "resourceTimeline",
-                            duration: {
-                                days: numberDisplayDaysOfCalendar || 30
+                    <FullCalendar
+                        ref={ref}
+                        schedulerLicenseKey="GPL-My-Project-Is-Open-Source"
+                        initialView="resourceTimelineMonthCustom"
+                        plugins={[resourceTimelinePlugin, interactionPlugin]}
+                        views={{
+                            resourceTimelineMonthCustom: {
+                                type: "resourceTimeline",
+                                duration: {
+                                    days: numberDisplayDaysOfCalendar || 30
+                                }
                             }
-                        }
-                    }}
-                    headerToolbar={{
-                        left: "",
-                        center: "",
-                        right: ""
-                    }}
-                    scrollTime={{days: 15}}
-                    scrollTimeReset={false}
-                    selectable
-                    height="auto"
-                    resourceOrder="false"
-                    slotMinWidth={80}
-                    resourceAreaHeaderContent="Rooms"
-                    resources="https://fullcalendar.io/api/demo-feeds/resources.json"
-                    events="https://fullcalendar.io/api/demo-feeds/events.json?single-day&for-resource-timeline"
+                        }}
+                        headerToolbar={{
+                            left: "",
+                            center: "title",
+                            right: ""
+                        }}
+                        scrollTime={{days: 15}}
+                        scrollTimeReset={false}
+                        selectable
+                        height="auto"
+                        resourceOrder="false"
+                        slotMinWidth={80}
+                        resourceAreaHeaderContent="Rooms"
+                        resources="https://fullcalendar.io/api/demo-feeds/resources.json"
+                        events="https://fullcalendar.io/api/demo-feeds/events.json?single-day&for-resource-timeline"
                     />
-                    </>
+                </>
             )}
         </FullCalendarInfiniteScrollWrapper>
     )

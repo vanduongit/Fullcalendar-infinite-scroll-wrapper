@@ -13,8 +13,8 @@ type ChildrenParams = {
 type Props = {
     scrollOptions: CalendarScrollOptions;
     children: (params: ChildrenParams) => React.ReactElement;
-    onChangeCalendar: (currentStartDate: Date, currentEndDate: Date, distanceDays: number) => void;
-    firstLoad: (startDate: Date, endDate: Date) => void;
+    onChangeCalendar?: (currentStartDate: Date, currentEndDate: Date, distanceDays: number) => void;
+    firstLoad?: (startDate: Date, endDate: Date) => void;
 };
 
 const FullCalendarInfiniteScrollWrapper = ({

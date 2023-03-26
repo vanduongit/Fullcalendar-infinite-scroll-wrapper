@@ -15,7 +15,7 @@
     "@types/node": "^16.18.21",
     "@types/react": "^18.0.29",
     "@types/react-dom": "^18.0.11",
-    "fullcalendar-timeline-infinite-scroll-wrapper": "^1.0.5",
+    "fullcalendar-timeline-infinite-scroll-wrapper": "^1.0.9",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-scripts": "5.0.1",
