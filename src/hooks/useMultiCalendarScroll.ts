@@ -2,7 +2,18 @@ import React, {useCallback, useEffect, useMemo, useRef, useState} from "react";
 import {addDays, addMonths, subMonths, subDays} from "date-fns";
 
 import {checkIsMacDevice, throttle} from "../utils";
-import { CalendarScrollOptions } from "../types";
+
+export interface CalendarRef {
+    getApi: () => any;
+}
+
+export interface CalendarScrollOptions {
+    stepDates?: number;
+    numberOfStepLoadData?: number;
+    numberOfDatesFromCurrentDate?: number;
+    slotMinWidth?: number;
+}
+
 
 const defaultOptions = {
     stepDates: 20,
@@ -92,7 +103,7 @@ export function useMultiCalendarScroll(
                             // Make scroll move to load more data when user keep click on scrollbar
                             scroller.scrollLeft += remain > 0 ? -1 : 1;
                         }
-                    }, 0);
+                    }, 100);
                 });
                 handleFetchMore(activeStart, activeEnd, steps);
             }

@@ -1,6 +1,6 @@
 {
   "name": "@vanduongit/fullcalendar-infinite-scroll-wrapper",
-  "version": "1.0.3",
+  "version": "1.0.5",
   "description": "Support infinite scroll to fullcalendar timeline",
   "scripts": {
     "rollup": "rollup -c"

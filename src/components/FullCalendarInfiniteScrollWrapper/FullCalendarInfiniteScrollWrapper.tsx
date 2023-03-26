@@ -1,6 +1,5 @@
 import React, { useRef } from 'react'
-import { useMultiCalendarScroll } from '../../hooks/useMultiCalendarScroll';
-import { CalendarScrollOptions } from '../../types';
+import { useMultiCalendarScroll, CalendarScrollOptions } from '../../hooks/useMultiCalendarScroll';
 
 type ChildrenParams = {
     ref: any;

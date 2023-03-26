@@ -291,7 +291,7 @@ function useMultiCalendarScroll(calendarRef, scrollOptions, fetchMore, firstLoad
                         // Make scroll move to load more data when user keep click on scrollbar
                         scroller_1.scrollLeft += remain_1 > 0 ? -1 : 1;
                     }
-                }, 0);
+                }, 100);
             });
             handleFetchMore(activeStart_1, activeEnd, steps);
         }
@@ -450,5 +450,5 @@ var FullCalendarInfiniteScrollWrapper = function (_a) {
     });
 };
 
-export { FullCalendarInfiniteScrollWrapper };
+export { FullCalendarInfiniteScrollWrapper, useMultiCalendarScroll };
 //# sourceMappingURL=index.js.map
